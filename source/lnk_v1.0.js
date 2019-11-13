@@ -1,4 +1,4 @@
-Modules["LNK_v1.0"]=function(c){
+Modules.Include("LNK_v1.0",function(c){
 	var ur=c.Web,rt="https://"+c.Url+ur.Root,cv=c.Vars,
 	cfg={host:"https://"+c.Url,pub:rt,vid:rt+ur.Video,eps:rt+ur.Episodes,srch:rt+ur.Search,prg:rt+ur.Program,list:rt+ur.List,home:rt+ur.Home,feed:rt+ur.Feed},
 	fRp=function(dt){if(dt.page>1&&dt.items.length<1){dt.page=1;}},
@@ -46,4 +46,4 @@ Modules["LNK_v1.0"]=function(c){
 	oMtkL=function(dt){return {id:dt.id,title:dt.title,page:1,chn:dt.chn,more:true,type:"grid",items:[],action:fMtkL};};
 
 	return {items:[],more:false,title:c.Name,type:"menu center",image:cfg.host+c.Icon,selectFirst:true,moreHeight:c.moreHeight||1200,search:function(s,cb){cb(oSr(s));},action:fBase};
-};
+});
