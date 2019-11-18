@@ -60,7 +60,7 @@ Modules.Include("TVPlay_v1.0",function(c){
 	var main={
 		items:[],more:false,title:cfg.title,type:"menu center",
 		selectFirst:true,moreHeight:c.moreHeight||1200,
-		itemClass:c.IconItemSVG?" img-svg img-svg-"+c.Name+"-item":"",
+		imgClass:c.IconItemSVG?" img-svg img-svg-"+c.Name+"-item":"",
 		search: function(s,cb){
 			cb(oTV({id:0,title:(s?"Laidos: \""+s+"\"":"Visos Laidos"),query:s,type:"grid",noImage:"none"}));
 		},
