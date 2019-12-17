@@ -41,8 +41,10 @@ Modules.Include("LRT_v1.0",function(c){
 			for(var i in b){
 				itm.push(oMti(b[i]));
 			}
+			dt.items=dt.items.concat(itm);
 			cb(itm);
 		});
+		dt.page++;
 	},
 	
 	//{id:dt.id,title:dt.title,page:1,type:"grid min center",items:[],action:fMtkP}
