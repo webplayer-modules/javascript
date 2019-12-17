@@ -44,7 +44,7 @@ Modules.Include("LRT_v1.0",function(c){
 			dt.items=dt.items.concat(itm);
 			cb(itm);
 		});
-		dt.page=2;
+		dt.page++;
 	},
 	
 	//{id:dt.id,title:dt.title,page:1,type:"grid min center",items:[],action:fMtkP}
