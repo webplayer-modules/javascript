@@ -18,7 +18,6 @@ Modules.Include("LRT_v1.0",function(c){
 	fSrt=function(i,p){return i.sort(function(a,b){return(a[p]>b[p])?1:((b[p]>a[p])?-1:0);});},
 	fPlay=function(cb,dt){fW(cfg.vid+"/"+dt.urlSegment+"/"+dt.id+"/true",cb,function(a){var v=a.videoConfig.videoInfo;AV.Open((v[cv.m3u8]?cfg.smil:cfg.mp4)+v.videoUrl+"/"+cv.pls+v[cv.tkn],v.title,cb);},0,"Programa nerasta.");},
 	fEps=function(cb,dt){if(dt.page>1&&dt.items.length<1){dt.page=1;}fW(cfg.eps+"/"+dt.id+"/1/"+dt.page+"/",cb,function(a){fVids(cb,dt,a);});},
-	fSr=function(cb,dt){fW(cfg.srch+"/"+encodeURIComponent(dt.query)+"/"+dt.page+"/",cb,function(a){fVids(cb,dt,a.components[0].component);});},
 	fPrgID=function(cb,dt){var err=fErr(cb,dt);Input.Show("Programos ID: ",function(a){var id=parseInt(a);if(id){fW(cfg.prg+"/"+id,cb,function(a){if(a.program&&a.program.id===id){cb(oPrg({id:id,posterImage:a.program.coverImage,title:a.program.title}));}else{err("","Programa nerasta.");}},0,"Neteisingas programos ID.");}else if(a){err("","Neteisingas programos ID.");}else{cb(false);}});},
 	fNext=function(cb,dt){var ltr=dt.pages.shift();if(!dt.pages.length){dt.more=false;}var f=function(itm){itm=fSrt(itm,"title");dt.items=dt.items.concat(itm);cb(itm);};fW(cfg.list+"?letter="+encodeURIComponent(ltr),cb,function(a){var i,itm=[];if(a.programList.length>=12){var len=dt.cnl.length,j=0,fl=function(b){for(var i in b.programList){var p=oPrg(b.programList[i]);itm.push(p);}j++;if(j>=len){f(itm);}};for(i in dt.cnl){fW(cfg.list+"?channelId="+dt.cnl[i]+"&letter="+ltr,cb,fl);}}else{for(i in a.programList){var p=oPrg(a.programList[i]);itm.push(p);}f(itm);}});},
 	fList=function(cb,dt){if(dt.more){if(dt.pages.length){fNext(cb,dt);}else{fW(cfg.home,cb,function(a){for(var i in a.channels){dt.cnl.push(a.channels[i].id);}fW(cfg.list,cb,function(b){dt.pages=b.letters;fNext(cb,dt);});});}}else{setTimeout(function(){cb();},1000);}},
@@ -31,17 +30,20 @@ Modules.Include("LRT_v1.0",function(c){
 
 	
 	fPl=function(cb,dt){
-		console.warn("something...");
+		fW(rt+"/article/"+dt.id,cb,function(a){
+			fW(a.article.get_playlist_url,cb,function(b){
+				AV.Open(b.playlist_item.file,b.title,cb,b.offset);
+			},0,"Programa nerasta.");
+		},0,"Programa nerasta.");
 	},
-	
+
 	fMtk=function(cb,dt){
 		console.log(arguments);
-		fW(rt+"/search?type=3&page="+(dt.page||1),cb,function(a){
+		fW(rt+"/search?type=3&page="+(dt.page||1)+(dt.query?"&q="+encodeURIComponent(dt.query):""),cb,function(a){
 			var itm=[],b=a.items;
-			for(var i in b){
-				itm.push(oMti(b[i]));
-			}
+			for(var i in b){itm.push(oMti(b[i]));}
 			dt.items=dt.items.concat(itm);
+			if(itm.length<1){dt.more=false;}
 			cb(itm);
 		});
 		dt.page++;
@@ -51,19 +53,21 @@ Modules.Include("LRT_v1.0",function(c){
 	
 	
 	fBase=function(cb){
-		cb([oMtk(),oFeed(),oID()]);
+		cb([oMtk()]);
 	},
 	
 	
 	/* Mediateka */	
-	oMtk=function(){return {id:1,title:"Naujausi",page:1,type:"grid",items:[],more:true,action:fMtk};},
+	oMtk=function(){return {id:1,title:"Naujausi Video",page:1,type:"grid min",items:[],more:true,action:fMtk};},
 	oMti=function(dt){return {
-			id:dt.id,title:dt.category_title,descr:dt.title,type:"grid",action:fMtk,
+			id:dt.id,title:dt.category_title,descr:dt.title,type:"grid",action:fPl,
 			image:"https://"+c.Url+dt.photo.replace("{WxH}","282x158"),cat:dt.category_id,
 			date:dt.date,
 		};
 	},
-   	
+	/* Search    */ 
+	oSr=function(s){return {id:2,title:"Paieška: \""+s+"\"",query:s,page:1,type:"grid",more:true,action:fMtk};},
+	
 	
 	//TODO: /program-page - for details
 	/* Episodes  */	
@@ -72,8 +76,6 @@ Modules.Include("LRT_v1.0",function(c){
 	oPrg=function(dt){return {id:dt.id,page:1,image:cfg.img+dt.posterImage,title:dt.title,imgClass:null,type:"grid",items:[],more:true,action:fEps};},
 	/* ProgramId */	
 	oID=function(){return {id:1,title:"Atidaryti programą",type:"grid",items:[],action:fPrgID};},
-	/* Search    */ 
-	oSr=function(s){return {id:2,title:"Paieška: \""+s+"\"",query:s,page:1,type:"grid",more:true,action:fSr};},
 	/* List      */	
 	oList=function(){return {id:0,title:"Visos Laidos",type:"grid min",items:[],more:true,pages:[],cnl:[],action:fList};},
 	/* Feed      */	
