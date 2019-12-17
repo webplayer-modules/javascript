@@ -55,9 +55,9 @@ Modules.Include("LRT_v1.0",function(c){
 	/* Mediateka */	
 	oMtk=function(){return {id:1,title:"Naujausi",page:1,type:"grid",items:[],more:true,action:fMtk};},
 	oMti=function(dt){return {
-			id:dt.id,title:dt.category_title,descr:dt.title,type:"grid",action:fMtk
-			image:"https://"+c.Url+dt.photo.replace("{WxH}","282x158"),cat=dt.category_id,
-			date:dt.date;
+			id:dt.id,title:dt.category_title,descr:dt.title,type:"grid",action:fMtk,
+			image:"https://"+c.Url+dt.photo.replace("{WxH}","282x158"),cat:dt.category_id,
+			date:dt.date,
 		};
 	},
    	
