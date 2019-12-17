@@ -35,6 +35,7 @@ Modules.Include("LRT_v1.0",function(c){
 	},
 	
 	fMtk=function(cb,dt){
+		console.log(arguments);
 		fW(rt+"/search?type=3&page="+(dt.page||1),cb,function(a){
 			var itm=[],b=a.items;
 			for(var i in b){
